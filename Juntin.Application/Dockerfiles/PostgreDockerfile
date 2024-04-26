@@ -1,0 +1,9 @@
+# Use a imagem base oficial do PostgreSQL
+FROM postgres:latest
+
+
+# Copie um script SQL para ser executado durante a inicialização do contêiner (opcional)
+# COPY init.sql /docker-entrypoint-initdb.d/
+
+# Opcionalmente, você pode expor a porta do PostgreSQL se desejar acessá-lo externamente
+# EXPOSE 5432

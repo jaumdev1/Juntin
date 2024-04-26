@@ -1,0 +1,9 @@
+# Use a imagem oficial do Redis como base
+FROM redis:latest
+
+# Mantenha a porta padrão do Redis exposta
+EXPOSE 6379
+
+# Configurações adicionais, se necessário
+# COPY redis.conf /usr/local/etc/redis/redis.conf
+# CMD ["redis-server", "/usr/local/etc/redis/redis.conf"]

@@ -1,0 +1,46 @@
+# Arquivos e diretórios gerados pela compilação
+bin/
+obj/
+
+# Arquivos de configuração
+*.user
+*.vscode
+.vs/
+*.suo
+*.cache
+*.log
+
+# Arquivos de dependência
+packages/
+*.dll
+*.exe
+
+# Arquivos de compilação
+*.pdb
+*.class
+*.o
+*.a
+*.so
+*.lib
+*.dylib
+
+# Arquivos de ambiente
+.env
+.env.local
+.env.*.local
+
+# Arquivos específicos do editor/IDE
+.vscode/
+*.sln.ide
+*.suo
+*.ntvs*
+*.njsproj
+*.sln.docstates
+
+# Diretórios do NuGet
+packages/
+
+# Diretórios de ferramentas
+_Tools/
+tools/
+

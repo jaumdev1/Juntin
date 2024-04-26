@@ -1,0 +1,6 @@
+@Juntin_HostAddress = http://localhost:5193
+
+GET {{Juntin_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
