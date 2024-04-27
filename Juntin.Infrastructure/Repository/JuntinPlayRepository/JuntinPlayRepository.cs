@@ -18,7 +18,7 @@ public class JuntinPlayRepository : BaseRepository<JuntinPlay>, IJuntinPlayRepos
     
     public async Task<List<JuntinPlay>> GetPage(int page, Guid OwnerId)
     {
-        var pageSize = 10;// Int32.Parse(_configuration.GetSection("PageSize").GetSection("DefaultPageSize").Value);
+        var pageSize = int.Parse(_configuration.GetSection("Paging").GetSection("DefaultPageSize").Value);
       return await _context.Set<UserJuntin>()
             .Where(x => x.UserId == OwnerId || x.JuntinPlay.OwnerId == OwnerId)
             .Select(x => x.JuntinPlay)
