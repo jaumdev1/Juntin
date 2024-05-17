@@ -1,7 +1,12 @@
 using Domain.Contracts.Repository;
 using Juntin.Infrastructure.Data;
+using Juntin.Infrastructure.Repository.EmailConfirmationRepository;
+using Juntin.Infrastructure.Repository.InviteJuntinPlayRepository;
+using Juntin.Infrastructure.Repository.JuntinMovieRepository;
 using Juntin.Infrastructure.Repository.JuntinRepository;
+using Juntin.Infrastructure.Repository.UserJuntinRepository;
 using Juntin.Infrastructure.Repository.UserRepository;
+using Juntin.Infrastructure.Repository.UserViewedJuntinMovieRepository;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
@@ -25,6 +30,11 @@ public static class DependencyInjection
 
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IJuntinPlayRepository, JuntinPlayRepository>();
+        services.AddScoped<IUserJuntinRepository, UserJuntinRepository>();
+        services.AddScoped<IJuntinMovieRepository, JuntinMovieRepository>();
+        services.AddScoped<IEmailConfirmationRepository, EmailConfirmationRepository>();
+        services.AddScoped<IUserViewedJuntinMovieRepository, UserViewedJuntinMovieRepository>();
+        services.AddScoped<IInviteJuntinPlayRepository, InviteJuntinPlayRepository>();
         return services;
     }
 }

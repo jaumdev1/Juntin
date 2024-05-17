@@ -1,7 +1,7 @@
 using System.Security.Cryptography;
 using System.Text;
 using Domain.Contracts.Repository;
-using Domain.Entities;
+using Domain.Dtos.Auth;
 using Mapster;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Http;
@@ -16,9 +16,11 @@ public class SessionManager
     private static IDatabase db;
     private static IDataProtector _protector;
     private static IConnectionMultiplexer _connectionMultiplexer;
-    private readonly IHttpContextAccessor _httpContextAccessor;
     private static IUserRepository _userRepository;
-    public SessionManager(IConnectionMultiplexer connectionMultiplexer, IDataProtectionProvider provider,  IHttpContextAccessor httpContextAccessor, IUserRepository userRepository)
+    private readonly IHttpContextAccessor _httpContextAccessor;
+
+    public SessionManager(IConnectionMultiplexer connectionMultiplexer, IDataProtectionProvider provider,
+        IHttpContextAccessor httpContextAccessor, IUserRepository userRepository)
     {
         _connectionMultiplexer = connectionMultiplexer;
         _protector = provider.CreateProtector("MySessionProtection");
@@ -33,7 +35,7 @@ public class SessionManager
             throw new ArgumentException("Username cannot be null or empty", nameof(username));
 
         var expirationTicks = DateTime.UtcNow.Add(expirationTime);
-        var sessionData = new UserInfo(userId,username, expirationTicks);
+        var sessionData = new UserInfo(userId, username, expirationTicks);
 
         var encryptedSessionData = _protector.Protect(JsonConvert.SerializeObject(sessionData));
 
@@ -43,18 +45,20 @@ public class SessionManager
 
         return sessionId;
     }
+
     public async Task<Guid> GetUserLoggedId()
     {
         var sessionId = _httpContextAccessor.HttpContext.Request.Cookies["Authorization"];
-       
+        if (string.IsNullOrEmpty(sessionId))
+        {
+            sessionId = _httpContextAccessor.HttpContext.Request.Headers["Authorization"];
+        }
+
         string encryptedSessionData = db.StringGet(sessionId);
         var sessionData = UnprotectSessionData(encryptedSessionData);
-        
+
         var userSession = JsonConvert.DeserializeObject<UserInfo>(sessionData);
-        if (userSession == null)
-        {
-          throw new Exception("User not found");
-        }
+        if (userSession == null) throw new Exception("User not found");
 
         return userSession.UserId;
     }
@@ -67,8 +71,8 @@ public class SessionManager
 
         return (username, expirationTicks);
     }
-    
-    
+
+
     public static UserInfo GetUserInfo(string sessionId)
     {
         if (string.IsNullOrEmpty(sessionId))
@@ -76,12 +80,12 @@ public class SessionManager
 
         string user = db.StringGet(sessionId);
         if (user == null) return null;
-     
-       var unprotectSessionData = UnprotectSessionData(db.StringGet(sessionId));
 
-       var userSession = unprotectSessionData.Adapt<UserInfo>();
+        var unprotectSessionData = UnprotectSessionData(db.StringGet(sessionId));
 
-       return userSession;
+        var userSession = unprotectSessionData.Adapt<UserInfo>();
+
+        return userSession;
     }
 
     public static void RemoveSession(string sessionId)
@@ -91,7 +95,40 @@ public class SessionManager
 
         db.KeyDelete(sessionId);
     }
+    
+    public async Task<AuthTokenDto> RefreshToken()
+    {
+        var refreshToken = _httpContextAccessor.HttpContext.Request.Cookies["RefreshAuthorization"];
+        if (string.IsNullOrEmpty(refreshToken))
+        {
+            refreshToken = _httpContextAccessor.HttpContext.Request.Headers["RefreshAuthorization"];
+        }
 
+        var userId = db.StringGet(refreshToken);
+        var user = await _userRepository.GetById(Guid.Parse(userId));
+        if (user == null) throw new Exception("User not found");
+        
+        
+        var newAccessToken = CreateSession(user.Id, user.Username, TimeSpan.FromMinutes(1));
+        var newRefreshToken = GenerateRefreshToken();
+        db.KeyDelete(refreshToken);
+        SaveRefreshToken(user.Id, newRefreshToken);
+        
+        var auth = new AuthTokenDto(newAccessToken, newRefreshToken);
+        return auth;
+    }
+    public string GenerateRefreshToken()
+    {
+        var randomNumber = new byte[32];
+        using var rng = RandomNumberGenerator.Create();
+        rng.GetBytes(randomNumber);
+        return Convert.ToBase64String(randomNumber);
+    }
+    public void SaveRefreshToken(Guid userId, string refreshToken)
+    {
+        var expiryDate = DateTime.UtcNow.AddDays(7);
+        db.StringSet(refreshToken, userId.ToString(), expiryDate - DateTime.UtcNow);
+    }
     public static string UnprotectSessionData(string encryptedSessionData)
     {
         var sessionData = _protector.Unprotect(encryptedSessionData);
@@ -120,8 +157,8 @@ public class UserInfo
         UserId = userId;
         ExpirationTime = expirationTime;
     }
+
     public Guid UserId { get; }
     public DateTime ExpirationTime { get; }
     public string Username { get; }
 }
-

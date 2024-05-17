@@ -9,12 +9,23 @@
 
     <ItemGroup>
         <Compile Remove="Class1.cs"/>
-        <Compile Remove="Dtos\JuntinPlay\UPdat.cs" />
+        <Compile Remove="Dtos\JuntinPlay\UPdat.cs"/>
     </ItemGroup>
 
     <ItemGroup>
         <PackageReference Include="FluentValidation" Version="11.9.0"/>
-        <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="9.0.0-preview.3.24172.9" />
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.3"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <Reference Include="Microsoft.Extensions.Configuration.Abstractions">
+            <HintPath>..\..\..\.nuget\packages\microsoft.extensions.configuration.abstractions\8.0.0\lib\net8.0\Microsoft.Extensions.Configuration.Abstractions.dll</HintPath>
+        </Reference>
+    </ItemGroup>
+
+    <ItemGroup>
+        <Folder Include="Dtos\Movie\Validator\"/>
     </ItemGroup>
 
 </Project>

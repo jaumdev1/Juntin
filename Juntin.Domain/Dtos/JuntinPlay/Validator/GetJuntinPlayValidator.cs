@@ -2,7 +2,7 @@ using FluentValidation;
 
 namespace Domain.Dtos.JuntinPlay.Validator;
 
-public class GetJuntinPlayValidator: AbstractValidator<GetJuntinPlayDto>
+public class GetJuntinPlayValidator : AbstractValidator<GetJuntinPlayDto>
 {
     public GetJuntinPlayValidator()
     {

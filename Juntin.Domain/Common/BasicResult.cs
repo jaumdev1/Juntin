@@ -29,6 +29,7 @@ public class BasicResult
 
         return new Error(statusCode, JsonConvert.SerializeObject(errorMessages));
     }
+
     #region Properties
 
     public bool IsSuccess { get; }

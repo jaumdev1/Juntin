@@ -13,15 +13,16 @@ namespace Juntin.Application.UseCase.JuntinMovieUseCase;
 
 public class CreateJuntinMovie : ICreateJuntinMovieUseCase
 {
-    private readonly IJuntinMovieRepository _juntinPlayRepository;
-    private readonly SessionManager _sessionManager;
     private readonly CreateJuntinMovieValidator _createJuntinMovieValidator;
-
-    public CreateJuntinMovie(IJuntinMovieRepository juntinPlayRepository, SessionManager sessionManager) 
+    private readonly IJuntinMovieRepository _juntinMovieRepository;
+    private readonly SessionManager _sessionManager;
+    private readonly IUserJuntinRepository _userJuntinRepository;
+    public CreateJuntinMovie(IJuntinMovieRepository juntinMovieRepository, SessionManager sessionManager,   IUserJuntinRepository userJuntinRepository)
     {
-        _juntinPlayRepository = juntinPlayRepository;
+        _juntinMovieRepository = juntinMovieRepository;
         _createJuntinMovieValidator = new CreateJuntinMovieValidator();
         _sessionManager = sessionManager;
+        _userJuntinRepository = userJuntinRepository;
     }
 
     public async Task<BasicResult<Guid>> Execute(JuntinMovieDto input)
@@ -31,17 +32,23 @@ public class CreateJuntinMovie : ICreateJuntinMovieUseCase
             var validations = await _createJuntinMovieValidator.ValidateAsync(input);
 
             if (!validations.IsValid) return DefaultValidator<Guid>.ReturnError(validations);
-            var juntinPlayMapped = input.Adapt<JuntinMovie>();
-            
-            juntinPlayMapped.Id = Guid.NewGuid();
+            var juntinMovieMapped = input.Adapt<JuntinMovie>();
 
-            Guid ownerId =  await _sessionManager.GetUserLoggedId();
+            juntinMovieMapped.Id = Guid.NewGuid();
+
+            var ownerId = await _sessionManager.GetUserLoggedId();
+
+            var isUserJuntin = await _userJuntinRepository.IsUserJuntin(juntinMovieMapped.JuntinPlayId, ownerId);
+
+            if (!isUserJuntin)
+                return BasicResult.Failure<Guid>(new Error(HttpStatusCode.Forbidden,
+                    "You are not allowed to access this resource"));
             
-            juntinPlayMapped.UserId = ownerId;
-            
-            await _juntinPlayRepository.Add(juntinPlayMapped);
-            
-            return juntinPlayMapped.Id;
+            juntinMovieMapped.UserId = ownerId;
+
+            await _juntinMovieRepository.Add(juntinMovieMapped);
+
+            return juntinMovieMapped.Id;
         }
         catch (Exception ex)
         {

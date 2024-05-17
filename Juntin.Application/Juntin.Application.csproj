@@ -12,17 +12,18 @@
 
     <ItemGroup>
         <ProjectReference Include="..\Juntin.Domain\Juntin.Domain.csproj"/>
+        <ProjectReference Include="..\Juntin.Infrastructure\Juntin.Infrastructure.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
         <PackageReference Include="BCrypt.Net-Next" Version="4.0.3"/>
         <PackageReference Include="Mapster" Version="7.4.0"/>
         <PackageReference Include="Microsoft.AspNetCore.DataProtection" Version="9.0.0-preview.3.24172.13"/>
-        <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
-        <PackageReference Include="Microsoft.AspNetCore.Http.Features" Version="5.0.17" />
+        <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0"/>
+        <PackageReference Include="Microsoft.AspNetCore.Http.Features" Version="5.0.17"/>
         <PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.0-preview.3.24172.9"/>
         <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.0-preview.3.24172.9"/>
-        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.2" />
+        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.2"/>
         <PackageReference Include="StackExchange.Redis" Version="2.7.33"/>
     </ItemGroup>
 
@@ -32,7 +33,7 @@
         </Reference>
         <Reference Include="Microsoft.AspNetCore.Http.Features"/>
         <Reference Include="Microsoft.EntityFrameworkCore">
-          <HintPath>..\..\..\.nuget\packages\microsoft.entityframeworkcore\8.0.2\lib\net8.0\Microsoft.EntityFrameworkCore.dll</HintPath>
+            <HintPath>..\..\..\.nuget\packages\microsoft.entityframeworkcore\8.0.2\lib\net8.0\Microsoft.EntityFrameworkCore.dll</HintPath>
         </Reference>
     </ItemGroup>
 

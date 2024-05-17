@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+    <meta charset='utf-8'/>
+    <title>IsUserJuntinUniqueBenchmark-20240428-183600</title>
+
+    <style type="text/css">
+        table {
+            border-collapse: collapse;
+            display: block;
+            width: 100%;
+            overflow: auto;
+        }
+
+        td, th {
+            padding: 6px 13px;
+            border: 1px solid #ddd;
+            text-align: right;
+        }
+
+        tr {
+            background-color: #fff;
+            border-top: 1px solid #ccc;
+        }
+
+        tr:nth-child(even) {
+            background: #f8f8f8;
+        }
+    </style>
+</head>
+<body>
+<pre><code>
+BenchmarkDotNet v0.13.12, Pop!_OS 22.04 LTS
+AMD Ryzen 5 3600, 1 CPU, 12 logical and 6 physical cores
+.NET SDK 8.0.202
+  [Host]     : .NET 8.0.3 (8.0.324.11423), X64 RyuJIT AVX2
+  DefaultJob : .NET 8.0.3 (8.0.324.11423), X64 RyuJIT AVX2
+</code></pre>
+<pre><code></code></pre>
+
+<table>
+    <thead>
+    <tr>
+        <th>Method</th>
+        <th>Mean</th>
+        <th>Error</th>
+        <th>StdDev</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td>RunIsUserJuntinUnique</td>
+        <td>371.6 &mu;s</td>
+        <td>7.26 &mu;s</td>
+        <td>9.69 &mu;s</td>
+    </tr>
+    <tr>
+        <td>RunIsUserJuntin</td>
+        <td>512.6 &mu;s</td>
+        <td>10.24 &mu;s</td>
+        <td>26.25 &mu;s</td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>

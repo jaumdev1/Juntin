@@ -11,19 +11,28 @@ public class ApplicationDbContext : DbContext
     {
     }
 
-    public DbSet<User> Users { get; set; }
-    public DbSet<AdminJuntin> AdminsJuntins { get; set; }
-    public DbSet<JuntinMovie> JuntinsMovies { get; set; }
-    public DbSet<JuntinPlay> JuntinsPlays { get; set; }
-    public DbSet<UserJuntin> UsersJuntins { get; set; }
-
+    public DbSet<User> User { get; set; }
+    public DbSet<AdminJuntin> AdminJuntin { get; set; }
+    public DbSet<JuntinMovie> JuntinMovie { get; set; }
+    public DbSet<JuntinPlay> JuntinPlay { get; set; }
+    public DbSet<UserJuntin> UserJuntin { get; set; }
+    public DbSet<EmailConfirmation> EmailConfirmation { get; set; }
+    public DbSet<UserViewedJuntinMovie> UserViewedJuntinMovie { get; set; }
+    public DbSet<InviteJuntinPlay> InviteJuntinPlay { get; set; }
     protected override void OnModelCreating(ModelBuilder builder)
     {
         builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
 
+
         foreach (var entityType in builder.Model.GetEntityTypes())
-            if (entityType.ClrType.GetProperty("IsDeleted") != null)
-                builder.Entity(entityType.Name).HasQueryFilter(GetIsDeletedRestriction(entityType.ClrType));
+        {
+            if (typeof(BaseEntity).IsAssignableFrom(entityType.ClrType))
+            {
+                builder.Entity(entityType.ClrType).HasQueryFilter(GetIsDeletedRestriction(entityType.ClrType));
+               
+            }
+        }
+        
         builder.Entity<User>()
             .HasIndex(u => u.Username)
             .IsUnique();
@@ -31,7 +40,8 @@ public class ApplicationDbContext : DbContext
         builder.Entity<User>()
             .HasIndex(u => u.Email)
             .IsUnique();
-        
+
+ 
         
         base.OnModelCreating(builder);
     }
@@ -41,5 +51,10 @@ public class ApplicationDbContext : DbContext
         var param = Expression.Parameter(type, "t");
         var body = Expression.Equal(Expression.Property(param, "IsDeleted"), Expression.Constant(false));
         return Expression.Lambda(body, param);
+    }
+
+    public async Task<InviteJuntinPlay> FirstOrDefaultAsync(Func<object, bool> func)
+    {
+        throw new NotImplementedException();
     }
 }

@@ -1,5 +1,6 @@
 using System.Net;
 using Domain.Common;
+using Domain.Dtos.Auth;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Juntin.Presentation.Controllers;
@@ -36,28 +37,41 @@ public abstract class BaseController : Controller
 
     protected ActionResult CookieAuthResponseBase<T>(
         HttpStatusCode statusCode,
-        BasicResult<T> basicResult,
+        BasicResult<AuthTokenDto> basicResult,
         string responseMessage,
         HttpContext context,
-        string cookieName = "Authorization",
         int cookieExpirationMinutes = 30,
         HttpStatusCode statusCodeError = HttpStatusCode.NotFound)
     {
         if (basicResult.IsFailure)
             return StatusCode(basicResult.Error.StatusCode, new BaseResponse<Error>(basicResult.Error));
 
-        // Se o resultado básico for um sucesso, retorne um StatusCode com a mensagem de resposta
         StatusCode((int)statusCode, responseMessage);
-
-        // Se o resultado da autenticação for um sucesso, armazene-o em um cookie
-        context.Response.Cookies.Append(cookieName, basicResult.Value.ToString(), new CookieOptions
+        string cookieName = "Authorization";
+        string refreshCookieName = "RefreshAuthorization";
+        
+            
+        var authCookieValue = basicResult.Value.AuthToken;
+        var refreshTokenValue = basicResult.Value.RefreshToken;
+        
+        context.Response.Cookies.Append(cookieName, authCookieValue, new CookieOptions
         {
             HttpOnly = true,
             Secure = true,
             SameSite = SameSiteMode.Strict,
             Expires = DateTime.UtcNow.AddMinutes(cookieExpirationMinutes)
         });
-
+        context.Response.Cookies.Append(refreshCookieName, refreshTokenValue, new CookieOptions
+        {
+            HttpOnly = true,
+            Secure = true,
+            SameSite = SameSiteMode.Strict,
+            Expires = DateTime.UtcNow.AddMinutes(cookieExpirationMinutes)
+        });
+      
+        context.Response.Headers.Authorization = authCookieValue;
+        context.Response.Headers.Add("RefreshAuthorization", refreshTokenValue);
+        
         return StatusCode((int)statusCode, responseMessage);
     }
 

@@ -1,3 +1,4 @@
+using System.Linq.Expressions;
 using Domain.Contracts.Repository;
 using Domain.Entities;
 using Juntin.Infrastructure.Data;
@@ -10,6 +11,7 @@ public class BaseRepository<T> : IBaseRepository<T> where T : BaseEntity
     #region Properties
 
     private readonly ApplicationDbContext _dbContext;
+    private IBaseRepository<T> _baseRepositoryImplementation;
 
     #endregion Properties
 
@@ -24,6 +26,7 @@ public class BaseRepository<T> : IBaseRepository<T> where T : BaseEntity
 
     public async Task Add(T entity)
     {
+     
         _dbContext
             .Set<T>()
             .Add(entity);
@@ -53,6 +56,7 @@ public class BaseRepository<T> : IBaseRepository<T> where T : BaseEntity
 
     public async Task<T> Update(T entity)
     {
+      
         _dbContext
             .Set<T>()
             .Update(entity);
@@ -60,4 +64,18 @@ public class BaseRepository<T> : IBaseRepository<T> where T : BaseEntity
         await _dbContext.SaveChangesAsync();
         return entity;
     }
+    public async Task<T> UpdatePartialAsync<T>(T entity, params Expression<Func<T, object>>[] properties) where T : class
+    {
+        _dbContext.Attach(entity);
+        foreach (var property in properties)
+        {
+            _dbContext.Entry(entity).Property(property).IsModified = true;
+        }
+        await _dbContext.SaveChangesAsync();
+
+        _dbContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.TrackAll;
+
+        return entity;
+    }
+    
 }

@@ -1,6 +1,7 @@
 using System.Net;
 using Domain.Common;
 using Domain.Dtos;
+using Domain.Dtos.Auth;
 using Juntin.Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,10 +19,11 @@ public class AuthenticationController : BaseController
     }
 
     [HttpPost]
-    public async Task<ActionResult<BasicResult<string>>> Create([FromBody] AuthenticationDto authenticationDto)
+    public async Task<ActionResult<BasicResult<AuthTokenDto>>> Create([FromBody] AuthenticationDto authenticationDto)
     {
         var result = await _createAuthentication.Execute(authenticationDto);
 
-        return CookieAuthResponseBase(HttpStatusCode.OK, result, "Success!", HttpContext);
+        return CookieAuthResponseBase<AuthTokenDto>(HttpStatusCode.OK, result, "Sucess!", HttpContext);
     }
+    
 }

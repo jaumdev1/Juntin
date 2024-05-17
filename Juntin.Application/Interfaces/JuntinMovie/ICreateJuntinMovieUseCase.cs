@@ -3,7 +3,6 @@ using Domain.Dtos.JuntinMovie;
 
 namespace Juntin.Application.Interfaces.JuntinMovie;
 
-public interface ICreateJuntinMovieUseCase   : IUseCaseBase<JuntinMovieDto, BasicResult<Guid>>
+public interface ICreateJuntinMovieUseCase : IUseCaseBase<JuntinMovieDto, BasicResult<Guid>>
 {
-    
 }

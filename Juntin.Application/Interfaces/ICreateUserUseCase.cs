@@ -5,5 +5,4 @@ namespace Juntin.Application.Interfaces;
 
 public interface ICreateUserUseCase : IUseCaseBase<UserDto, BasicResult>
 {
-  
 }

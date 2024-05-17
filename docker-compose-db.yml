@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  postgres:
+    build:
+      context: ./Juntin.Application/Dockerfiles
+      dockerfile: PostgreDockerfile
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: juntin
+    ports:
+      - "5432:5432"
+    networks:
+      - juntin_network
+
+  redis:
+    build:
+      context: ./Juntin.Application/Dockerfiles
+      dockerfile: RedisDockerfile
+    ports:
+      - "6379:6379"
+    networks:
+      - juntin_network
+
+networks:
+  juntin_network:
+    external: true

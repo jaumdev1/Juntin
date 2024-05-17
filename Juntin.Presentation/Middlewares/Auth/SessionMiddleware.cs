@@ -1,5 +1,4 @@
 using Juntin.Application.Security;
-using Mapster;
 using Newtonsoft.Json;
 using StackExchange.Redis;
 
@@ -18,6 +17,12 @@ public class SessionMiddleware
     {
         var sessionId = context.Request.Cookies["Authorization"];
 
+       
+        if (string.IsNullOrEmpty(sessionId))
+        {
+            sessionId = context.Request.Headers.Authorization;
+        }
+
         if (!string.IsNullOrEmpty(sessionId))
         {
             string encryptedSessionData = _db.StringGet(sessionId);
@@ -27,7 +32,7 @@ public class SessionMiddleware
                 {
                     var sessionDataUnprotect = SessionManager.UnprotectSessionData(encryptedSessionData);
                     var userSession = JsonConvert.DeserializeObject<UserInfo>(sessionDataUnprotect);
-                    
+
                     if (userSession.ExpirationTime > DateTime.UtcNow)
                     {
                         await next();

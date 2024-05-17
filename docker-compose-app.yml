@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  juntin:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    networks:
+      - juntin_network
+
+networks:
+  juntin_network:
+    external: true

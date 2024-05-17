@@ -2,7 +2,7 @@ using FluentValidation;
 
 namespace Domain.Dtos.JuntinPlay.Validator;
 
-public class CreateJuntinPlayValidator: AbstractValidator<JuntinPlayDto>
+public class CreateJuntinPlayValidator : AbstractValidator<JuntinPlayDto>
 {
     public CreateJuntinPlayValidator()
     {
@@ -11,7 +11,5 @@ public class CreateJuntinPlayValidator: AbstractValidator<JuntinPlayDto>
             .MinimumLength(4).WithMessage("Size is smaller than allowed. Size allowed 4");
         RuleFor(c => c.Category).NotEmpty().WithMessage("Category is mandatory");
         RuleFor(c => c.Color).NotEmpty().WithMessage("Color is mandatory");
-  
-            
     }
 }

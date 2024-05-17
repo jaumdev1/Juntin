@@ -49,7 +49,75 @@ namespace Juntin.Infrastructure.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("AdminsJuntins");
+                    b.ToTable("AdminJuntin");
+                });
+
+            modelBuilder.Entity("Domain.Entities.EmailConfirmation", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("ConfirmationToken")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("ConfirmedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("EmailConfirmation");
+                });
+
+            modelBuilder.Entity("Domain.Entities.InviteJuntinPlay", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("ExpireAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<Guid>("JuntinPlayId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Link")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("JuntinPlayId");
+
+                    b.ToTable("InviteJuntinPlay");
                 });
 
             modelBuilder.Entity("Domain.Entities.JuntinMovie", b =>
@@ -68,12 +136,18 @@ namespace Juntin.Infrastructure.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
 
+                    b.Property<bool>("IsWatchedEveryone")
+                        .HasColumnType("boolean");
+
                     b.Property<Guid>("JuntinPlayId")
                         .HasColumnType("uuid");
 
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<int>("TmdbId")
+                        .HasColumnType("integer");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -85,13 +159,16 @@ namespace Juntin.Infrastructure.Migrations
                     b.Property<Guid>("UserId")
                         .HasColumnType("uuid");
 
+                    b.Property<int>("Views")
+                        .HasColumnType("integer");
+
                     b.HasKey("Id");
 
                     b.HasIndex("JuntinPlayId");
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("JuntinsMovies");
+                    b.ToTable("JuntinMovie");
                 });
 
             modelBuilder.Entity("Domain.Entities.JuntinPlay", b =>
@@ -121,6 +198,10 @@ namespace Juntin.Infrastructure.Migrations
                     b.Property<Guid>("OwnerId")
                         .HasColumnType("uuid");
 
+                    b.Property<string>("TextColor")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
@@ -128,7 +209,7 @@ namespace Juntin.Infrastructure.Migrations
 
                     b.HasIndex("OwnerId");
 
-                    b.ToTable("JuntinsPlays");
+                    b.ToTable("JuntinPlay");
                 });
 
             modelBuilder.Entity("Domain.Entities.User", b =>
@@ -136,6 +217,9 @@ namespace Juntin.Infrastructure.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
+
+                    b.Property<bool>("ConfirmedEmail")
+                        .HasColumnType("boolean");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -175,7 +259,7 @@ namespace Juntin.Infrastructure.Migrations
                     b.HasIndex("Username")
                         .IsUnique();
 
-                    b.ToTable("Users");
+                    b.ToTable("User");
                 });
 
             modelBuilder.Entity("Domain.Entities.UserJuntin", b =>
@@ -193,6 +277,9 @@ namespace Juntin.Infrastructure.Migrations
                     b.Property<Guid>("JuntinPlayId")
                         .HasColumnType("uuid");
 
+                    b.Property<int>("Role")
+                        .HasColumnType("integer");
+
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
@@ -205,7 +292,43 @@ namespace Juntin.Infrastructure.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UsersJuntins");
+                    b.ToTable("UserJuntin");
+                });
+
+            modelBuilder.Entity("Domain.Entities.UserViewedJuntinMovie", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsViewed")
+                        .HasColumnType("boolean");
+
+                    b.Property<Guid>("JuntinMovieId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("UserJuntinId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("ViewedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("JuntinMovieId");
+
+                    b.HasIndex("UserJuntinId");
+
+                    b.ToTable("UserViewedJuntinMovie");
                 });
 
             modelBuilder.Entity("Domain.Entities.AdminJuntin", b =>
@@ -227,10 +350,32 @@ namespace Juntin.Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Domain.Entities.JuntinMovie", b =>
+            modelBuilder.Entity("Domain.Entities.EmailConfirmation", b =>
+                {
+                    b.HasOne("Domain.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Domain.Entities.InviteJuntinPlay", b =>
                 {
                     b.HasOne("Domain.Entities.JuntinPlay", "JuntinPlay")
                         .WithMany()
+                        .HasForeignKey("JuntinPlayId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("JuntinPlay");
+                });
+
+            modelBuilder.Entity("Domain.Entities.JuntinMovie", b =>
+                {
+                    b.HasOne("Domain.Entities.JuntinPlay", "JuntinPlay")
+                        .WithMany("JuntinMovies")
                         .HasForeignKey("JuntinPlayId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -260,7 +405,7 @@ namespace Juntin.Infrastructure.Migrations
             modelBuilder.Entity("Domain.Entities.UserJuntin", b =>
                 {
                     b.HasOne("Domain.Entities.JuntinPlay", "JuntinPlay")
-                        .WithMany()
+                        .WithMany("UserJuntins")
                         .HasForeignKey("JuntinPlayId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -274,6 +419,32 @@ namespace Juntin.Infrastructure.Migrations
                     b.Navigation("JuntinPlay");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Domain.Entities.UserViewedJuntinMovie", b =>
+                {
+                    b.HasOne("Domain.Entities.JuntinMovie", "JuntinMovie")
+                        .WithMany()
+                        .HasForeignKey("JuntinMovieId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entities.UserJuntin", "UserJuntin")
+                        .WithMany()
+                        .HasForeignKey("UserJuntinId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("JuntinMovie");
+
+                    b.Navigation("UserJuntin");
+                });
+
+            modelBuilder.Entity("Domain.Entities.JuntinPlay", b =>
+                {
+                    b.Navigation("JuntinMovies");
+
+                    b.Navigation("UserJuntins");
                 });
 #pragma warning restore 612, 618
         }
