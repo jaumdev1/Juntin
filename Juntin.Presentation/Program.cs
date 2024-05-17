@@ -26,6 +26,7 @@ builder.Services.AddHttpClient();
 builder.Services.AddTransient<GlobalExceptionHandler>();
 builder.Services.AddScoped<SessionMiddleware>();
 builder.Services.AddHttpContextAccessor();
+builder.WebHost.UseUrls("http://*:4040");
 var app = builder.Build();
 
 
